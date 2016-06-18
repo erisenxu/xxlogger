@@ -72,7 +72,7 @@ typedef struct tagLogger    LOGGER;
 typedef struct tagLogger*   LPLOGGER;
 
 #define LOG_DEBUG(szFormat, args...)            log_info(LOG_LV_DEBUG, szFormat, ##args);
-#define LOG_LV_PROTOCOL(szFormat, args...)      log_info(LOG_LV_PROTOCOL, szFormat, ##args);
+#define LOG_PROTOCOL(szFormat, args...)         log_info(LOG_LV_PROTOCOL, szFormat, ##args);
 #define LOG_INFO(szFormat, args...)             log_info(LOG_LV_INFO, szFormat, ##args);
 #define LOG_WARN(szFormat, args...)             log_info(LOG_LV_WARN, szFormat, ##args);
 #define LOG_ERROR(szFormat, args...)            log_info(LOG_LV_ERROR, szFormat, ##args);

@@ -12,6 +12,7 @@ xxlogger是日志打印工具类，提供对java, object-c, c的支持。xxlogge
 2. 可指定日志文件的最大大小<p>
 3. 日志文件大小超过最大大小，会自动备份原日志文件<p>
 4. 日志分不同的级别，可配置最小级别，级别高于或等于最小级别的才会打印<p>
+5. 可以很方便地扩充日志级别<p>
 
 为什么会有xxlogger
 =============
@@ -20,14 +21,32 @@ xxlogger是日志打印工具类，提供对java, object-c, c的支持。xxlogge
 
 如何使用xxlogger
 =============
-xxlogger的使用非常简单，您只需要在主程序中，调用initLogger进行一次初始化，在其他地方就可以使用了。<p>
-java - android:<p>
-&nbsp;&nbsp;&nbsp;&nbsp;1. Application的onCreate函数中调用initLogger初始化日志<p>
+xxlogger的使用非常简单，您只需要在主程序中，调用initLogger进行一次初始化，在其他地方就可以使用了。<p><p>
+一、java - android:<p>
+&nbsp;&nbsp;&nbsp;&nbsp;1. 建议在Application的onCreate函数中调用initLogger初始化日志<p>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LogManager.getInstance().initLogger("logfilename.log", LogLevel.LOG_LV_ERROR, 1024000); // 设置日志文件名，日志级别，最大日志大小(约1M)<p>
 &nbsp;&nbsp;&nbsp;&nbsp;2. 需要打印日志的地方，调用相应的功能函数打印日志<p>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LogManager.getInstance().getLogger().debug("这是一个debug级别的日志，调试信息：%s", "调试");<p>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LogManager.getInstance().getLogger().info("这是一个info级别的日志，信息：%s", "信息");<p>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LogManager.getInstance().getLogger().error("发生错误了，错误码:%d， 错误信息：%s", errCode, "错误信息");<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LogManager.getInstance().getLogger().error("发生错误了，错误码:%d， 错误信息：%s", errCode, "错误信息");<p><p>
+二、object-c:<p>
+&nbsp;&nbsp;&nbsp;&nbsp;1. 在AppDelegate的didFinishLaunchingWithOptions函数中调用initLogger初始化日志<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果您在info.plist中配置了AppLogFileName(日志文件名称，不含路径)、AppLogLevel(日志级别，可配置DEBUG、PROTOCOL、INFO、WARN、ERROR这几个级别)、AppMaxLogLevel(最大日志大小)这几个配置项，可以直接调用initLogger初始化：<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[[LogManager getInstance] initLogger];<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果没有在info.plist中配置上面的参数，则需要指定日志文件名(需包含文件路径)、日志级别、日志大小:<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[[LogManager getInstance] initLogger:"logFileName" logLevel:LOG_LEVEL_ERROR maxLogSize:1024000];<p>
+&nbsp;&nbsp;&nbsp;&nbsp;2. 需要打印日志的地方，调用相应的功能函数打印日志<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LOGING_DEBUG(@"这是一个debug级别的日志，调试信息：%@", @"调试");<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LOGING_ERROR(@"发生错误了，错误码:ld, 错误信息%@", errCode, @"错误信息");<p>
+三、c:<p>
+&nbsp;&nbsp;&nbsp;&nbsp;1. 在包含main函数的c文件中先定义一个全局的日志对象<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LOGGER g_stLogger;<p>
+&nbsp;&nbsp;&nbsp;&nbsp;2，在main函数中调用init_logger初始化日志<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;init_logger(&g_stLogger, "logPath", "logFileName", "logLevel", 4096000, 10);<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;指定日志最大大小为4M，如果超过了4M，将备份当前日志文件。这里设置的最大备份日志文件数量是10个。当备份文件超过了10个，会覆盖最早备份的日志。<p>
+&nbsp;&nbsp;&nbsp;&nbsp;3. 需要打印日志的地方，调用相应的功能函数打印日志<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LOG_DEBUG("这是一个debug级别的日志，调试信息：%s", "调试");<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LOG_ERROR("发生错误了，错误码:%d, 错误信息%s", errCode, "错误信息");<p>
 
 xxlogger的使用场景建议(Notice)
 =============
